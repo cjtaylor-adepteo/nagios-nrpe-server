@@ -1,0 +1,48 @@
+---
+# Update apt-cache for Debian based OS's
+- name: Update apt cache [Alpin]
+  apk:
+    update_cache: yes
+
+# Nagios NRPE Server for Debian based OS's
+- name: Install Nagios NRPE Server [Alpin]
+  apk:
+    name: nrpe
+    state: present
+
+- name: Install nagios-plugins [Alpin]
+  apk:
+    name: 
+      - nrpe-plugin
+      - nagios-plugins-load
+      - nagios-plugins-users
+      - nagios-plugins-mailq
+      - nagios-plugins-procs
+      - nagios-plugins-disk
+      - nagios-plugins-swap
+    state: present
+
+- name: Create ncessary Alpine files
+  ansible.builtin.file:
+    path: /etc/nrpe_local.cfg
+    state: touch
+    owner: nagios
+    group: nagios
+    mode: u=rw,g=r,o=r
+
+- name: Create ncessary Alpine files
+  ansible.builtin.file:
+    path: /etc/nrpe.d
+    state: directory
+    recurse: yes
+    owner: nagios
+    group: nagios
+
+- name: Create ncessary Alpine init files
+  template:
+    src: templates/nrpe.init
+    dest: /etc/init.d/nrpe
+    owner: root
+    group: root
+    mode: 0755
+

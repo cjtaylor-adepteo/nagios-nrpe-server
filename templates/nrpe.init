@@ -1,0 +1,15 @@
+#!/sbin/openrc-run
+
+: ${user:="nagios"}
+: ${cfgfile:="/etc/nrpe.cfg"}
+: ${nrpe_options:=" -c $cfgfile"}  # for backward compatibility
+
+command="/usr/bin/nrpe"
+command_args="--config=/etc/nrpe.cfg"
+command_args_background="--daemon "
+pidfile="/var/run/nrpe/${RC_SVCNAME}.pid"
+
+depend() {
+        need net
+        after firewall
+}
